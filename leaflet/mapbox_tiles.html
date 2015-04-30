@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<!-- Code from :https://www.mapbox.com/mapbox.js/example/v1.0.0/plain-leaflet/ -->
+<head>
+    <meta charset=utf-8 />
+    <title>Plain Leaflet API</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.9/mapbox.css' rel='stylesheet' />
+    <style>
+    body {
+        margin: 0;
+        padding: 0;
+    }
+    
+    #map {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 100%;
+    }
+    </style>
+</head>
+
+<body>
+    <div id='map'></div>
+    <script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.9/mapbox.js'></script>
+    <script>
+    L.mapbox.accessToken = 'pk.eyJ1Ijoic3BhdGlhbCIsImEiOiJINEMxWmw4In0.MXOfvjXYb65iOfIAKcRLbA';
+    // Replace 'examples.map-i87786ca' with your map id.
+    var mapboxTiles = L.tileLayer('https://{s}.tiles.mapbox.com/v4/examples.map-i87786ca/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken, {
+        attribution: '<a href="http://www.mapbox.com/about/maps/" target="_blank">Terms &amp; Feedback</a>'
+    });
+
+    var map = L.map('map')
+        .addLayer(mapboxTiles)
+        .setView([42.3610, -71.0587], 15);
+    </script>
+</body>
+
+</html>

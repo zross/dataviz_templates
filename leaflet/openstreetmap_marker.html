@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <!-- Code directly from web site: http://leafletjs.com/ -->
+    <title>Leaflet - a JavaScript library for mobile-friendly maps</title>
+    <meta charset="utf-8" />
+    <!-- Leaflet -->
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+
+    <div id="map" class="map" style="height: 300px"></div>
+      <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+    <script>
+    var osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+        osmAttrib = '&copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        osm = L.tileLayer(osmUrl, {
+            maxZoom: 18,
+            attribution: osmAttrib
+        });
+
+    var map = L.map('map').setView([42.440505, -76.495692], 15).addLayer(osm);
+
+    L.marker([42.440505, -76.495692])
+        .addTo(map)
+        .bindPopup('ZevRoss Spatial Analysis (downtown Ithaca).')
+        .openPopup();
+    </script>
+  
+
+</body>
+</html>

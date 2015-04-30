@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=utf-8 />
+    <title>Plain Leaflet API</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <link rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v3/3.14/themes/css/cartodb.css" />
+
+</head>
+<style>
+    #map{
+        width:500px;
+        height:500px;
+    }
+</style>
+<body>
+    <div id='map'></div>
+    
+</body>
+
+
+<script src="http://libs.cartocdn.com/cartodb.js/v3/3.14/cartodb.js"></script>
+<script>
+// get the viz.json url from the CartoDB Editor
+// - click on visualize
+// - create new visualization
+// - make visualization public
+// - click on publish
+// - go to API tab
+
+cartodb.createVis('map', 'http://documentation.cartodb.com/api/v2/viz/2b13c956-e7c1-11e2-806b-5404a6a683d5/viz.json')
+  .done(function(vis, layers) {
+    // layer 0 is the base layer, layer 1 is cartodb layer
+    // when setInteraction is disabled featureOver is triggered
+    layers[1].setInteraction(true);
+    layers[1].on('featureOver', function(e, latlng, pos, data, layerNumber) {
+      console.log(e, latlng, pos, data, layerNumber);
+    });
+
+    // you can get the native map to work with it
+    var map = vis.getNativeMap();
+
+    // now, perform any operations you need, e.g. assuming map is a L.Map object:
+    map.setZoom(2);
+    //map.panTo([42.3610, -71.0587]);
+  });
+</script>
+</html>
