@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset=utf-8 />
+    <title></title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.9/mapbox.css' rel='stylesheet' />
+    <style>
+    body {
+        margin: 0;
+        padding: 0;
+    }
+    
+    #map {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 100%;
+    }
+    </style>
+</head>
+
+<body>
+Mapbox, Leaflet, zoom to show features
+    <div id='map'></div>
+ 	<div id="legend"></div>
+    <script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.9/mapbox.js'></script>
+ <script src='http://code.jquery.com/jquery-2.1.4.min.js'></script>
+  <script src='../leaflet/assets/Leaflet.fullscreen.min.js'></script>
+
+
+    <script>
+$(document).ready(function () {
+
+	var pinLat = 42.727511;
+	var pinLong = -77.495958;
+	var pinFeatured = 1;
+	// draw map without zoom control UI
+	L.mapbox.accessToken = 'KEY HERE';
+	var map = L.mapbox.map('map', 'TILESET', {
+		maxZoom: 17,
+		minZoom: 7
+	}).setView([pinLat, pinLong], 14);
+
+	// Disable drag and zoom handlers
+	// map.dragging.disable();
+	//map.touchZoom.disable();
+	//map.doubleClickZoom.disable();
+	map.scrollWheelZoom.disable();
+
+	// Disable tap handler, if present
+	if (map.tap) map.tap.disable();
+
+	// add full screen
+	L.control.fullscreen().addTo(map);
+	
+	// add legend
+	map.legendControl.addLegend(document.getElementById('legend').innerHTML);
+	
+	// add alt base layers
+	L.control.layers({
+		'Topographic': L.mapbox.tileLayer('TILESET').addTo(map),
+		'Street': L.mapbox.tileLayer('TILESET'),
+		'Satellite': L.mapbox.tileLayer('TILESET')
+	}).addTo(map);
+
+	// add pin to map
+	if (pinFeatured == 1) {
+		cmarkerSymbol = {
+			'iconUrl': 'http://www.clipartbest.com/cliparts/pi5/nG6/pi5nG6kiB.svg',
+			'iconSize': [35, 54],
+			'iconAnchor': [18, 46],
+			'popupAnchor': [0, -46]
+		};
+	} else {
+		cmarkerSymbol = {
+			'iconUrl': 'http://www.clipartbest.com/cliparts/pi5/nG6/pi5nG6kiB.svg',
+			'iconSize': [30, 43],
+			'iconAnchor': [15, 36],
+			'popupAnchor': [0, -36]
+		};
+	}
+
+	var thePin = L.mapbox.featureLayer().addTo(map);
+
+	var geoJson = {
+		"type": "Feature",
+		"geometry": {
+			"type": "Point",
+			"coordinates": [pinLong, pinLat]
+		},
+		"properties": {
+			"icon": {}
+		}
+	};
+
+	geoJson.properties.icon = cmarkerSymbol;
+
+	var mDirections = "<a href='https://maps.google.com?saddr=Current+Location&daddr=" + pinLat + "," + pinLong + "' class='marker-preserve-link' target='_blank'>Directions via Google →</a>";
+	
+	thePin.on('layeradd', function (e) {
+		var marker = e.layer,
+			feature = marker.feature;
+		marker.setIcon(L.icon(feature.properties.icon));
+		marker.bindPopup(mDirections, {minWidth: 175});
+	});
+
+	thePin.setGeoJSON(geoJson);
+
+	// add preserve boundaries, then filter out the ones that we're not viewing here
+	var Boundaries = L.geoJson("", {
+		filter: function (feature, layer) {
+			if (feature.properties.FID == 1) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+	});
+	$.ajax({
+		dataType: "json",
+		url: "../common_assets/data/boundaries.geojson",
+		success: function (data) {
+			Boundaries.addData(data);
+			Boundaries.setStyle({
+				className: 'map-boundaries'
+			});
+			Boundaries.addTo(map);
+		}
+	});
+
+	// force zoom-in when double-clicking boundaries
+	Boundaries.on('dblclick', function (e) {
+		map.setView(e.latlng, map.getZoom() + 1);
+	});
+
+	// add trails hidden by default, then filter out the ones that we're not viewing here
+	var Trails = L.geoJson("", {
+		filter: function (feature, layer) {
+			if (feature.properties.FID == 1) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+	});
+	$.ajax({
+		dataType: "json",
+		url: "../common_assets/data/trails.geojson",
+		success: function (data) {
+			Trails.addData(data);
+			Trails.setStyle({
+				className: 'map-trails'
+			});
+			Trails.addTo(map);
+			$('.map-trails').fadeOut(0);
+		}
+	});
+
+	// force zoom-in when double-clicking trails
+	Trails.on('dblclick', function (e) {
+		map.setView(e.latlng, map.getZoom() + 1);
+	});
+
+	// only show preserve boundaries and trails when map is zoomed in
+	map.on('zoomend', function () {
+		switch (map.getZoom()) {
+		case 12:
+		case 13:
+		case 14:
+			$('.map-boundaries').fadeIn(200);
+			$('.map-trails').fadeOut(200);
+			break;
+		case 15:
+		case 16:
+		case 17:
+			$('.map-boundaries').fadeIn(200);
+			$('.map-trails').fadeIn(200);
+			break;
+		default:
+			$('.map-boundaries').fadeOut(200);
+			$('.map-trails').fadeOut(200);
+		}
+	});
+});
+    </script>
+</body>
+
+</html>
+
+
+
+
+
+
+

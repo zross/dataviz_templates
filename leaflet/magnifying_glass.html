@@ -69,17 +69,17 @@ function init() {
     });
 
     //magnifying glass tiles can be different
-    var magnifyingGlass = L.magnifyingGlass({
-        zoomOffset: 4,
-        layers: [
-            L.tileLayer(mapboxTiles)
+    // var magnifyingGlass = L.magnifyingGlass({
+    //     zoomOffset: 4,
+    //     layers: [
+    //         L.tileLayer(mapboxTiles)
 
-        ],
-        fixedPosition: false,
-        latLng: [40.749625, -73.989637]
-    });
+    //     ],
+    //     fixedPosition: false,
+    //     latLng: [40.749625, -73.989637]
+    // });
 
-    map.addLayer(magnifyingGlass);
+    // map.addLayer(magnifyingGlass);
 
     // make the glass disappear on click...
     // magnifyingGlass.on('click', function() {
